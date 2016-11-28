@@ -1,0 +1,22 @@
+[Unit]
+Description=autoinit service
+DefaultDependencies=no
+After=systemd-udev-trigger.service systemd-vconsole-setup.service
+Wants=systemd-udev-trigger.service systemd-vconsole-setup.service
+
+[Service]
+Environment=HOME=/
+Environment=NEWROOT=/sysroot
+WorkingDirectory=/
+ExecStart=/usr/lib/systemd/systemd-autoinit
+# ExecStart=/usr/bin/bash
+Type=oneshot
+StandardInput=tty-force
+StandardOutput=inherit
+StandardError=inherit
+KillMode=process
+IgnoreSIGPIPE=no
+
+# Bash ignores SIGTERM, so we send SIGHUP instead, to ensure that bash
+# terminates cleanly.
+KillSignal=SIGHUP

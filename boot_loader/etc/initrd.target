@@ -1,0 +1,9 @@
+[Unit]
+Description=Initrd Default Target
+Documentation=man:systemd.special(7)
+OnFailure=emergency.target
+OnFailureJobMode=replace-irreversibly
+ConditionPathExists=/etc/initrd-release
+Wants=autoinit.service
+After=autoinit.service
+AllowIsolate=yes

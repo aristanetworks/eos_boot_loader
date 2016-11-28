@@ -1,0 +1,29 @@
+################################################################################
+# This script is responsible for starting the next stage. It handles setting up
+# the bootimage mount, decompressing the image and executing boot0. It is a
+# library so that it may be called automatically or manually.
+################################################################################
+
+function libmount() {
+   label=$1; mountpoint=$2
+   [[ $label ]] || { echo "Usage: label mount_point"; return 2; }
+   [[ $mountpoint ]] || { echo "Usage: label *mount_point*"; return 2; }
+
+   mountpoint -q $mountpoint &&
+      { echo "Mountpoint $mountpoint already mounted"; return 0; }
+
+   mkdir -p $mountpoint
+   mount -L $label $mountpoint ||
+      { echo "Disk with label $label NOT mounted to $mountpoint"; return 3; }
+
+   return 0
+}
+
+function libumount() {
+   mountpoint=$1
+   [[ $mountpoint ]] || { echo "Usage: mount_point"; return 2; }
+   mountpoint -q $BOOTIMAGE || { echo "Mountpoint $mountpoint not mounted"; return 3; }
+   return 0
+}
+
+################################################################################

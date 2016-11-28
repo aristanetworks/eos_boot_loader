@@ -1,0 +1,20 @@
+#!/bin/bash
+################################################################################
+# This script is executed at boot. The prompt is set and the bash shell is
+# started. If the user exits the shell, a message is printed and the shell is
+# restarted.
+################################################################################
+
+function _shell() {
+   export HOME=/stuff
+   export PATH=$HOME:/usr/sbin:/usr/bin
+   export PS1="installer#"
+   cd $HOME
+   bash
+}
+
+while true; do
+   _shell
+done
+
+################################################################################

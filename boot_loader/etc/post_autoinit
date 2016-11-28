@@ -1,0 +1,36 @@
+#!/bin/bash
+################################################################################
+# Autoinit for post boot loader
+################################################################################
+
+set -e
+. /usr/lib/systemd/autoinit.settings || exit 2
+
+################################################################################
+
+function enable() {
+   sudo rm -rf $AUTO_INIT_DISABLE_FILE || exit 3
+   exit 0
+}
+
+function disable() {
+   sudo touch $AUTO_INIT_DISABLE_FILE || exit 3
+   exit 0
+}
+
+function status() {
+   [ -f $AUTO_INIT_DISABLE_FILE ] && echo disabled || echo enabled
+   exit 0
+}
+
+case "$1" in
+   enable|disable|status)
+      $1
+   ;;
+   *)
+      echo $"Usage: $0 {enable|disable|status}"
+      # Exiting with 0 so EOS CLI does not complain
+      exit 0
+esac
+
+###############################################################################

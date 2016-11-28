@@ -1,0 +1,51 @@
+#!/bin/bash
+################################################################################
+# Autoinit for boot loader
+################################################################################
+
+set -e
+. /usr/lib/systemd/autoinit.settings || exit 2
+
+################################################################################
+
+function boot() {
+
+   [ -f $AUTO_INIT_DISABLE_FILE ] && {
+      rm -rf $AUTO_INIT_DISABLE_FILE
+      echo "Autoinit (re)enabled"
+   }
+
+   [ -f /usr/lib/systemd/autoinit.lib ] || {
+      echo "System already booted"
+      exit 2
+   }
+   . /usr/lib/systemd/autoinit.lib || exit 2
+   run_init || exit 3
+   exit 0
+}
+
+function enable() {
+   rm -rf $AUTO_INIT_DISABLE_FILE || exit 3
+   exit 0
+}
+
+function disable() {
+   touch $AUTO_INIT_DISABLE_FILE || exit 3
+   exit 0
+}
+
+function status() {
+   [ -f $AUTO_INIT_DISABLE_FILE ] && echo disabled || echo enabled
+   exit 0
+}
+
+case "$1" in
+   boot|enable|disable|status)
+      $1
+   ;;
+   *)
+      echo $"Usage: $0 {boot|enable|disable|status}"
+      exit 2
+esac
+
+###############################################################################

@@ -1,0 +1,52 @@
+################################################################################
+# This script calls the autoinit lib after a delay. This script is started at
+# system boot time. It waits for the PERSIST mount to be mounted and then
+# starts a count down that the user may cancel with control + c. If not
+# cancelled, then autoboot will be executed.
+################################################################################
+
+. /usr/lib/systemd/autoinit.lib || exit 2
+
+[[ $PERSIST ]] || { echo "Missing var PERSIST"; exit 2; }
+[[ $AUTO_START ]] || { echo "Missing var AUTO_START"; exit 2; }
+
+################################################################################
+
+function wait_for_mount() {
+   while true; do
+      mountpoint -q $PERSIST && return
+      echo "Waiting for $PERSIST mount"
+      sleep 1
+   done
+}
+
+function main() {
+
+   trap _cancel INT
+
+   wait_for_mount
+
+   [ -f $AUTO_INIT_DISABLE_FILE ] && {
+      echo "File $AUTO_INIT_DISABLE_FILE exist, autoinit cancelled"
+      return 0
+   }
+
+   for ((i=$AUTO_START;i>=0;i--)); do
+      echo "Auto init in $i second(s) (control-c to stop)"
+      sleep 1
+   done
+
+   run_init
+}
+
+
+function _cancel() {
+   echo
+   set -e
+   echo "Auto init cancelled"
+   exit 1
+}
+
+
+main $@
+################################################################################

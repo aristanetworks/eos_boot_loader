@@ -1,0 +1,98 @@
+################################################################################
+# This script is responsible for starting the next stage. It handles setting up
+# the bootimage mount, decompressing the image and executing boot0. It is a
+# library so that it may be called automatically or manually.
+################################################################################
+
+. /usr/lib/systemd/autoinit.settings || return 2
+. /usr/lib/systemd/autoinit_tools.lib || return 2
+
+[[ $PERSIST ]] || { echo "Missing var PERSIST"; return 2; }
+[[ $PERSIST_LABEL ]] || { echo "Missing var PERSIST_LABEL"; return 2; }
+[[ $BOOTIMAGE ]] || { echo "Missing var BOOTIMAGE"; return 2; }
+[[ $BOOTIMAGE_LABEL ]] || { echo "Mising var BOOTIMAGE_LABEL"; return 2; }
+
+################################################################################
+
+function run_init() {
+
+   libmount $PERSIST_LABEL $PERSIST || { echo "Fatal"; return 3; }
+
+   # Source boot-config. SWI file should be stored in var SWI
+   [ -f ${PERSIST}/boot-config ] || { echo "boot-config not found"; return 3; }
+   . ${PERSIST}/boot-config || { echo "Failed to load boot-config"; return 3; }
+
+   [[ $SWI ]] ||
+      { echo "Failed to determine SWI file from boot-config"; return 3; }
+
+   echo "SWI file is $SWI"
+
+   [[ $SWI == file* ]] || {
+      echo "SWI must be type file as only file is currently supported"
+      return 3
+   }
+
+   swi=$(echo $SWI | sed 's/file://g')
+   echo "Normalized SWI file is $swi"
+   [ -f $swi ] || { echo "File $swi not found"; return 3; }
+
+   echo "Decompressing swi file"
+   stage=${PERSIST}/.stage; rm -rf $stage; mkdir -p $stage
+   pushd $stage
+   unzip -uo $swi || { echo "Fatal"; return 3; }
+   popd
+   echo "SWI decompressed"
+
+   # Build new root filesystem with squashfs image
+   echo "Un-mounting mountpoint $BOOTIMAGE"
+   libumount $BOOTIMAGE
+   disk=$(readlink -f /dev/disk/by-label/${BOOTIMAGE_LABEL})
+   echo "RootFS disk is $disk"
+   [ -b $disk ] || { echo "Disk $disk is not valid"; return 3; }
+
+   echo "Formatting disk $disk"
+   mkfs.ext4 -L $BOOTIMAGE_LABEL -F $disk || { echo "Fatal"; return 3; }
+
+   echo "Mounting disk with label $BOOTIMAGE_LABEL ($disk) to $BOOTIMAGE"
+   libmount $BOOTIMAGE_LABEL $BOOTIMAGE || { echo "Fatal"; return 3; }
+
+   echo "Decompressing rootfs"
+   unsquashfs -f -d $BOOTIMAGE ${stage}/rootfs-i386.sqsh ||
+      { echo "Fatal"; return 3; }
+   echo "RootFS decompressed"
+
+   fstab="LABEL=$PERSIST_LABEL $PERSIST auto defaults 0 0"
+   echo $fstab >> $BOOTIMAGE/etc/fstab
+   echo "Adding the following entry to fstab->$fstab"
+
+   echo "Installing settings and tools to new rootfs"
+   mkdir -p ${BOOTIMAGE}/usr/lib/systemd || { echo "Fatal"; return 3; }
+   settings=/usr/lib/systemd/autoinit.settings
+   install -m 0644 $settings ${BOOTIMAGE}/usr/lib/systemd ||
+      { echo "Fatal"; return 3; }
+
+   # Install post autoinit
+   install -m 0755 /usr/share/post_autoinit ${BOOTIMAGE}/usr/bin/autoinit ||
+      { echo "Fatal"; return 3; }
+
+   echo "Setting permissions for $PERSIST"
+   chmod -Rf 777 $PERSIST
+
+   # Generate kernel parameters from static and from labels
+   # kern_param+=" root=LABEL=$BOOTIMAGE_LABEL rw "
+   kern_param+=" root=$disk rw "
+   kern_param+=" platform=veos "
+
+   echo "Kernel parameters->${kern_param}"
+
+   pushd ${BOOTIMAGE}/boot
+   kexec --load -l vmlinuz-EosKernel --initrd=System.map-EosKernel \
+         --append="$kern_param" || { echo "Fatal"; return 3; }
+   popd
+
+   echo "Executing new kernel"
+
+   kexec -e
+}
+
+################################################################################

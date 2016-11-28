@@ -1,0 +1,16 @@
+################################################################################
+# This defines all the global vars for autoinit. Some vars are exported so that
+# they are available to the next stage such as boot0 or application init file. 
+################################################################################
+
+export PERSIST_LABEL="persist"
+export PERSIST="/mnt/flash"
+
+export BOOTIMAGE_LABEL="bootimage"
+export BOOTIMAGE="/${BOOTIMAGE_LABEL}"
+
+export AUTO_INIT_DISABLE_FILE="${PERSIST}/.auto_init_disable"
+
+AUTO_START=4
+
+################################################################################

@@ -1,0 +1,13 @@
+#!/bin/bash
+################################################################################
+# This script is executed at boot. It starts the bash shell and starts the
+# autoinit script. If the user exits the shell, a new shell is spawned
+################################################################################
+
+bash --init-file /usr/lib/systemd/autoinit.script
+
+while true; do
+   bash
+done
+
+################################################################################
