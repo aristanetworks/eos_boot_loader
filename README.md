@@ -12,6 +12,7 @@ Eos_grub_loader installs a Linux kernel, a small initrd, and Grub2 to disk (it c
 ## Tools
 ### configure.sh
 The configure.sh script is available from the installer only. This script requires one arg, the disk to install the boot_loader. The configure.sh script will generate the script install.sh in the same directory.
+
 1. configure.sh
 2. install.sh
 
