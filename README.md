@@ -50,3 +50,16 @@ The autoinit (/usr/bin/autoinit) script is available in the boot_loader and EOS 
 A bootable USB flash disk can be created with the command
 
 1. sudo dd if=installer.iso of=/dev/[USB] status=progress
+
+## Quick Guide
+1. Download installer.iso
+2. Create new virutal machine with 2048M RAM, 2 core CPU and 10G disk
+3. Set installer.iso as boot device (cdrom)
+4. Boot. Select 'vga' install
+5. At bash prompt run configure.sh && install.sh (system will reboot)
+6. Cancel auto-init (control + c)
+7. Set ip address on interface with ifconfig (ifconfig ens33 192.168.55.125/224 up)
+8. Change directory to /mnt/flash (cd /mnt/flash)
+8. Copy swi file to local (scp user@192.168.55.1:veos.swi .)
+9. Write boot-config file (echo "SWI=file:/mnt/flash/veos.swi" > boot-config)
+10. Boot (autoinit boot)
