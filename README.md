@@ -1,7 +1,7 @@
 # eos_grub_loader
 
 ## What
-A Linux/Grub2 boot loader for EOS (alternative to aboot)
+A Linux/Grub2 boot loader for EOS (alternative to aboot). This does NOT include EOS, you will need to download EOS from arista.com with your account.
 
 ## Why
 Aboot is not easy to install on x86/x86_64 and has limitations such as lack of ACPI support, EFI, etc. Aboot also decompresses the root file system to memory. Eos_grub_loader is based on Grub2 which is the most popular Linux boot loader and is very well supported. Eos_grub_loader decompresses the root file system to disk (on each boot) hence memory is preserved. A switch usually has a low write flash medium. The expectation is that eos_grub_loader is installed on a system with a disk (preferably SSD). Disk space is also less costly on cloud infrastructure them memory. 
