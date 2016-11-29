@@ -9,6 +9,10 @@ Aboot is not easy to install on x86/x86_64 and has limitations such as lack of A
 ## How
 Eos_grub_loader installs a Linux kernel, a small initrd, and Grub2 to disk (it comes in a bootable installer). On eos_grub_loader boot, the file system /mnt/flash is mounted (it looks for a disk with the label persist). Assuming that autoinit is not disabled (settings file on /mnt/flash) then the system proceedes to the next stage. A new filesystem is created on the disk with the label bootimage and mounted to /bootimage. If a previous filesystem existed it will be destroyed. The file /mnt/flash/boot-config is consulted to determine the desired SWI. The SquashFS file (rootfs-i386.sqsh) is extracted from the SWI and decompressed to /bootimage. A static settings file and tool(s) are installed to /bootimage. A fstab entry is installed to /bootimage/etc/fstab for /mnt/flash. Finally, the EOS kernel is loaded and executed. At this point eos_grub_loader dies and its memory is reclaimed by the EOS kernel. If any failure occurs or if autoinit is disabled the user can manage eos_grub_loader with the bash shell (no credentials required).
 
+## Download
+
+1. https://github.com/aristanetworks/eos_boot_loader/releases/download/v.1/installer.iso
+
 ## Tools
 ### configure.sh
 The configure.sh script is available from the installer only. This script requires one arg, the disk to install the boot_loader. The configure.sh script will generate the script install.sh in the same directory.
