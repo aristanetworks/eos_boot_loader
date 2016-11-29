@@ -1,0 +1,90 @@
+function to_gigabytes() {
+   # Returns result with unit sign
+   arg=$1
+   [[ $arg ]] ||{ echo "function to_gigabytes requires arg Gigabytes/Megabytes/Kilobytes/Bytes" 1>&2; return 2; }
+   bytes=$(to_bytes_nosign $arg || return $?)
+   unitbytes=$(expr $bytes / 1000000000)
+   echo "${unitbytes}G"
+}
+
+function to_gigabytes_nosign() {
+   # Returns result with no unit sign
+   arg=$1
+   [[ $arg ]] ||{ echo "function to_gigabytes requires arg Gigabytes/Megabytes/Kilobytes/Bytes" 1>&2; return 2; }
+   bytes=$(to_bytes_nosign $arg || return $?)
+   unitbytes=$(expr $bytes / 1000000000)
+   echo "${unitbytes}"
+}
+
+function to_megabytes() {
+   # Returns result with unit sign
+   arg=$1
+   [[ $arg ]] ||{ echo "function to_megabytes requires arg Gigabytes/Megabytes/Kilobytes/Bytes" 1>&2; return 2; }
+   bytes=$(to_bytes_nosign $arg || return $?)
+   unitbytes=$(expr $bytes / 1000000)
+   echo "${unitbytes}M"
+}
+
+function to_megabytes_nosign() {
+   # Returns result with no unit sign
+   arg=$1
+   [[ $arg ]] ||{ echo "function to_megabytes requires arg Gigabytes/Megabytes/Kilobytes/Bytes" 1>&2; return 2; }
+   bytes=$(to_bytes_nosign $arg || return $?)
+   unitbytes=$(expr $bytes / 1000000)
+   echo "${unitbytes}"
+}
+
+function to_kilobytes() {
+   # Returns result with unit sign
+   arg=$1
+   [[ $arg ]] ||{ echo "function to_kilobytes requires arg Gigabytes/Megabytes/Kilobytes/Bytes" 1>&2; return 2; }
+   bytes=$(to_bytes_nosign $arg || return $?)
+   unitbytes=$(expr $bytes / 1000)
+   echo "${unitbytes}K"
+}
+
+function to_kilobytes_nosign() {
+   # Returns result with no unit sign
+   arg=$1
+   [[ $arg ]] ||{ echo "function to_kilobytes requires arg Gigabytes/Megabytes/Kilobytes/Bytes" 1>&2; return 2; }
+   bytes=$(to_bytes_nosign $arg || return $?)
+   unitbytes=$(expr $bytes / 1000)
+   echo "${unitbytes}"
+}
+
+function to_bytes() {
+   # Returns result with unit sign
+   arg=$1
+   [[ $arg ]] ||{ echo "function to_bytes requires arg Gigabytes/Megabytes/Kilobytes/Bytes" 1>&2; return 2; }
+   bytes=$(to_bytes_nosign $arg || return $?)
+   echo "${bytes}B"
+}
+
+function to_bytes_nosign() {
+   # Returns byte value as integer (without the unit sign)
+   arg=$1
+   [[ $arg ]] || { echo "Usage: Gigabytes/Megabytes/Kilobytes/Bytes" 1>&2; return 2; }
+   size=$(echo ${arg:: -1})
+   unit=$(echo ${arg: -1})
+
+   case "$unit" in
+      G) echo $(expr $size \* 1000000000); ;;
+      M) echo $(expr $size \* 1000000); ;;
+      K) echo $(expr $size \* 1000); ;;
+      B) echo $size; ;;
+      *)
+         echo "Unit type $unit not valid"; return 2; 
+   esac
+}
+
+function to_logical_size_unit() {
+   # Returns the value with a logical unit
+   arg=$1
+   [[ $arg ]] || { echo "Usage: Gigabytes/Megabytes/Kilobytes/Bytes" 1>&2; return 2; }
+
+   bytes=$(to_bytes_nosign $arg)
+   [ $bytes -gt 1000000000 ] && { echo $(to_gigabytes ${bytes}B); return 0; }
+   [ $bytes -gt 1000000 ] && { echo $(to_megabytes ${bytes}B); return 0; }
+   [ $bytes -gt 1000 ] && { echo $(to_kilobytes ${bytes}B); return 0; }
+   echo $(to_bytes ${bytes}B); return 0
+}

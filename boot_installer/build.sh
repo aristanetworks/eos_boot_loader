@@ -38,7 +38,7 @@ filesystems=" isofs msdos xfs "
 dinstall+=" fdisk parted mkfs.xfs wipefs df du rmdir chmod mountpoint "
 dinstall+=" mksquashfs unsquashfs "
 dinstall+=" xfs_admin mkfs.ext4 "
-dinstall+=" md5sum zip unzip less touch sync "
+dinstall+=" md5sum zip unzip less touch sync expr "
 dinstall+=" grub2-install "
 
    # Network support

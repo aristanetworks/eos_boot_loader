@@ -12,11 +12,15 @@
 [[ $BOOTIMAGE ]] || { echo "Missing var BOOTIMAGE"; return 2; }
 [[ $BOOTIMAGE_LABEL ]] || { echo "Mising var BOOTIMAGE_LABEL"; return 2; }
 
+SYSTEM_MAC_ADDRESS=${PERSIST}/system_mac_address
+
 ################################################################################
 
 function run_init() {
 
    libmount $PERSIST_LABEL $PERSIST || { echo "Fatal"; return 3; }
+
+   #
 
    # Source boot-config. SWI file should be stored in var SWI
    [ -f ${PERSIST}/boot-config ] || { echo "boot-config not found"; return 3; }

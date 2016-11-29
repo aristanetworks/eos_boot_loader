@@ -38,7 +38,7 @@ filesystems=" isofs msdos xfs "
 dinstall+=" fdisk parted mkfs.xfs wipefs df du rmdir chmod mountpoint "
 dinstall+=" mksquashfs unsquashfs "
 dinstall+=" xfs_admin mkfs.ext4 "
-dinstall+=" md5sum zip unzip less install sync touch "
+dinstall+=" md5sum zip unzip less install sync touch expr "
 dinstall+=" grub2-install "
 
 # Network support
@@ -61,9 +61,10 @@ syslinux="/usr/share/syslinux"
 
 mkdir -p $builddir/bootloader/isolinux
 
-install -m 0755 etc/install.sh $builddir/bootloader
+install -m 0755 etc/configure.sh $builddir/bootloader
 install -m 0644 etc/user_readme $builddir/README
 install -m 0644 etc/autoinit.settings $builddir/bootloader
+install -m 0644 etc/libbashbyte $builddir/bootloader
 
 install -m 0644 $syslinux/isolinux.bin $builddir/bootloader/isolinux
 install -m 0644 $syslinux/ldlinux.c32 $builddir/bootloader/isolinux
