@@ -51,6 +51,9 @@ A bootable USB flash disk can be created with the command
 
 1. sudo dd if=installer.iso of=/dev/[USB] status=progress
 
+## Memory Footprint
+Because the rootfile system does not consume memory it will not require the same about of memory as normal. I have tested with 1536MB but did not stress it. I am currently recommending 2048M and will revise if necessary.
+
 ## Quick Guide
 1. Download installer.iso
 2. Create new virutal machine with 2048M RAM, 2 core CPU and 10G disk
