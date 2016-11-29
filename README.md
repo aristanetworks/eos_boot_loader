@@ -7,7 +7,7 @@ A Linux/Grub2 boot loader for EOS (alternative to aboot)
 Aboot is not easy to install on x86/x86_64 and has limitations such as lack of ACPI support, EFI, etc. Aboot also decompresses the root file system to memory. Eos_grub_loader is based on Grub2 which is the most popular Linux boot loader and is very well supported. Eos_grub_loader decompresses the root file system to disk (on each boot) hence memory is preserved. A switch usually has a low write flash medium. The expectation is that eos_grub_loader is installed on a system with a disk (preferably SSD). Disk space is also less costly on cloud infrastructure them memory. 
 
 ## How
-Eos_grub_loader installs a Linux kernel, a small initrd, and Grub2 to disk (it comes in a bootable installer). On eos_grub_loader boot, the file system /mnt/flash is mounted (it looks for a disk with the label persist). Assuming that autoinit is not disabled (settings file on /mnt/flash) then the system proceedes to the next stage. A new filesystem is created on the disk with the label bootimage and mounted to /bootimage. If a previous filesystem existed it will be destroyed. The file /mnt/flash/boot-config is consulted to determine the desired SWI. The SquashFS file (rootfs-i386.sqsh) is extracted from the SWI and decompressed to /bootimage. A static settings file and tool(s) are installed to /bootimage. A fstab entry is installed to /bootimage/etc/fstab for /mnt/flash. Finally, the EOS kernel is loaded and executed. At this point eos_grub_loader dies and its memory is reclaimed by the EOS kernel. If any failure occurs or if autoinit is disabled the user can manage eos_grub_loader with the bash shell (no credentials required).
+Eos_grub_loader installs a Linux kernel, a small initrd, and Grub2 to disk (it comes in a bootable installer). On eos_grub_loader boot, the file system /mnt/flash is mounted (it looks for a disk with the label persist). Assuming that autoinit is not disabled (settings file on /mnt/flash) then the system proceeds to the next stage. A new filesystem is created on the disk with the label bootimage and mounted to /bootimage. If a previous filesystem existed it will be destroyed. The file /mnt/flash/boot-config is consulted to determine the desired SWI. The SquashFS file (rootfs-i386.sqsh) is extracted from the SWI and decompressed to /bootimage. A static settings file and tool(s) are installed to /bootimage. A fstab entry is installed to /bootimage/etc/fstab for /mnt/flash. Finally, the EOS kernel is loaded and executed. At this point eos_grub_loader dies and its memory is reclaimed by the EOS kernel. If any failure occurs or if autoinit is disabled the user can manage eos_grub_loader with the bash shell (no credentials required).
 
 ## Download
 A binary bootable installer can be downloaded from https://github.com/aristanetworks/eos_boot_loader/releases/download/v.1/installer.iso
@@ -20,11 +20,12 @@ The configure.sh script is available from the installer only. This script requir
 2. install.sh
 
 ### Autoinit
-The autoinit script (installed in /usr/bin/autoinit) can control the autoinit settings from inside eos_grub_loader or the EOS system using with "bash autoinit". From inside eos_grub_loader the next stage can be booted with autoinit boot. This option is not present once EOS is running. Autoinit has the following options in addition to the above.
+The autoinit (/usr/bin/autoinit) script is available in the boot_loader and EOS (not the installer). It can be executed from the bash shell or from the EOS CLI. The script is used to enable/disable autoboot, show the status of autoboot and if ran inside the boot_loader it can be used to manually boot the next stage.
 
 1. No Arg    - status
-1. 'enable'  - enable autoinit
-2. 'disable' - disables autoinit
+2. 'enable'  - enable autoinit
+3. 'disable' - disables autoinit
+4. 'boot' - boots the next stage (only available in the boot_loader)
 
 ## Build
 ### Instructions
