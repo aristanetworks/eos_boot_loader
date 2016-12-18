@@ -30,22 +30,21 @@ The autoinit (/usr/bin/autoinit) script is available in the boot_loader and EOS 
 3. 'disable' - disables autoinit
 4. 'boot' - boots the next stage (only available in the boot_loader)
 
-## Build
-### Instructions
+## Build Instructions
+### Setup Environment
 1. [ -f /usr/bin/mock ] || sudo dnf -y install mock
 2. cd ~/workspace; mkdir eos_grub_loader; cd eos_grub_loader
 3. cat /etc/mock/fedora-24-i386.cfg | sed 's/fedora-24-i386/eos_grub_loader/g' > mock.cfg
 4. mock -r mock.cfg --init
 5. mock -r mock.cfg --install dnf git vim
-6. ln -s /var/lib/mock/eos_grub_loader/root (Optional)
-7. echo "#\!/bin/bash\nmock -r mock.cfg --shell" > shell; chmod +x shell
+6. echo "#\!/bin/bash\nmock -r mock.cfg --copyout /builddir/autoinit/dist/installer.iso ." > copyout
+7. echo "#\!/bin/bash\nmock -r mock.cfg --shell" > shell
+8. chmod +x shell copyout
 8. ./shell
-9. cd
+9. cp /usr/bin/vim /usr/bin/vi 
 10. git clone https://github.com/aristanetworks/eos_boot_loader.git
 11. cd eos_grub_loader
 12. ./build.sh
-13. exit
-14. mock -r mock.cfg --copyout /builddir/autoinit/dist/installer.iso .
 
 ### USB bootable
 A bootable USB flash disk can be created with the command
