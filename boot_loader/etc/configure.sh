@@ -3,8 +3,8 @@
 # This installer does the following
 # 1) Creates 3 partitions (boot, bootimage, persist)
 # 2) Installs grub2 to part 1 (boot)
-# 3) Formats part 2 (bootimage/bootimage) with EXT4
-# 4) Formats part 3 (persist/[/mnt/flash]) with EXT4
+# 3) Formats part 2 (bootimage, /bootimage) with EXT4
+# 4) Formats part 3 (persist, /mnt/flash]) with EXT4
 ################################################################################
 
 MIN_DISK_SIZE=10G
