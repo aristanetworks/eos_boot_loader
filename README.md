@@ -38,13 +38,14 @@ The autoinit (/usr/bin/autoinit) script is available in the boot_loader and EOS 
 4. mock -r mock.cfg --init
 5. mock -r mock.cfg --install dnf git vim
 6. ln -s /var/lib/mock/eos_grub_loader/root (Optional)
-7. mock -r mock.cfg --shell
-8. cd
-9. git clone https://github.com/aristanetworks/eos_boot_loader.git
-10. cd eos_grub_loader
-11. ./build.sh
-12. exit
-13. mock -r mock.cfg --copyout /builddir/autoinit/dist/installer.iso .
+7. echo "#\!/bin/bash\nmock -r mock.cfg --shell" > shell; chmod +x shell
+8. ./shell
+9. cd
+10. git clone https://github.com/aristanetworks/eos_boot_loader.git
+11. cd eos_grub_loader
+12. ./build.sh
+13. exit
+14. mock -r mock.cfg --copyout /builddir/autoinit/dist/installer.iso .
 
 ### USB bootable
 A bootable USB flash disk can be created with the command
