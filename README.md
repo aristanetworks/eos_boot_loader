@@ -37,8 +37,8 @@ The autoinit (/usr/bin/autoinit) script is available in the boot_loader and EOS 
 3. cat /etc/mock/fedora-24-i386.cfg | sed 's/fedora-24-i386/eos_grub_loader/g' > mock.cfg
 4. mock -r mock.cfg --init
 5. mock -r mock.cfg --install dnf git vim
-6. echo "#\/!/bin/bash\nmock -r mock.cfg --copyout /builddir/autoinit/dist/installer.iso ." > copyout
-7. echo "#\/!/bin/bash\nmock -r mock.cfg --shell" > shell
+6. echo "#\!/bin/bash\nmock -r mock.cfg --copyout /builddir/autoinit/dist/installer.iso ." > copyout
+7. echo "#\!/bin/bash\nmock -r mock.cfg --shell" > shell
 8. chmod +x shell copyout
 8. ./shell
 9. cp /usr/bin/vim /usr/bin/vi 
