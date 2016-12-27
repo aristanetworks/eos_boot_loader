@@ -40,7 +40,7 @@ The autoinit (/usr/bin/autoinit) script is available in the boot_loader and EOS 
 6. echo "#\\!/bin/bash\nmock -r mock.cfg --copyout /builddir/autoinit/dist/installer.iso ." > copyout
 7. echo "#\\!/bin/bash\nmock -r mock.cfg --shell" > shell
 8. chmod +x shell copyout
-8. ./shell
+8. ./shell; cd; rm -rf build
 9. cp /usr/bin/vim /usr/bin/vi 
 10. git clone https://github.com/aristanetworks/eos_boot_loader.git
 11. cd eos_grub_loader
