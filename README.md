@@ -30,7 +30,7 @@ The autoinit (/usr/bin/autoinit) script is available in the boot_loader and EOS 
 3. 'disable' - disables autoinit
 4. 'boot' - boots the next stage (only available in the boot_loader)
 
-## x86 Build Instructions
+## Build Instructions
 ### Setup Environment
 1. [ -f /usr/bin/mock ] || sudo dnf -y install mock
 2. cd ~/workspace; mkdir eos_grub_loader; cd eos_grub_loader
